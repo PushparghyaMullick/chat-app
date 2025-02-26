@@ -1,7 +1,7 @@
-const { config } = require("dotenv");
-const User = require("../models/user");
-const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
+import { config } from "dotenv";
+import User from "../models/user";
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
 config();
 

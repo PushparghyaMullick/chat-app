@@ -1,8 +1,7 @@
-const express = require('express');
-const { check } = require('express-validator');
-
-const { signup, login, logout, updateProfile, checkAuth } = require('../controllers/auth-controller');
-const protectRoute = require('../middleware/protect-route');
+import express from 'express';
+import { check } from 'express-validator';
+import { signup, login, logout, updateProfile, checkAuth } from '../controllers/auth-controller.js';
+import protectRoute from '../middleware/protect-route.js';
 
 const router = express.Router();
 
@@ -24,4 +23,4 @@ router.post('/logout', logout)
 router.put('/:uid/update', updateProfile)
 router.get('/check', checkAuth)  // whenever refreshing page
 
-module.exports = router;
+export default router;

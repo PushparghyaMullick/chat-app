@@ -1,8 +1,8 @@
-const User = require("../models/user");
-const bcrypt = require("bcryptjs");
-const { validationResult } = require("express-validator");
-const { generateToken } = require("../lib/utils");
-const { cloudinary } = require("../lib/cloudinary");
+import User from "../models/user.js";
+import bcrypt from "bcryptjs";
+import { validationResult } from "express-validator";
+import { generateToken } from "../lib/utils.js";
+import { cloudinary } from "../lib/cloudinary.js";
 
 const signup = async (req, res) => {
     const errors = validationResult(req);
@@ -143,4 +143,4 @@ const checkAuth = (req, res) => {
     }
 }
 
-module.exports = { signup, login, logout, updateProfile, checkAuth };
+export { signup, login, logout, updateProfile, checkAuth };
