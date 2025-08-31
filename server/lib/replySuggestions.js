@@ -1,10 +1,12 @@
-import { Mistral } from "@mistralai/mistralai";
+import { Mistral } from '@mistralai/mistralai';
+import 'dotenv/config';
 
-const client = new Mistral({ apiKey: process.env.MISTRAL_API_KEY });
+const apiKey = process.env.MISTRAL_API_KEY || "";
+const client = new Mistral({apiKey: apiKey});
 
-export async function getReplySuggestions(chatHistory) {
-  // Keep only recent 10 exchanges for context
-  const recentHistory = chatHistory.slice(-10).map(
+// recentChatHistory: Latest 10 exchanges for context
+export async function getReplySuggestions(recentChatHistory) {
+  const chatContext = recentChatHistory.map(
     (msg) => `${msg.direction}: ${msg.content}`
   ).join("\n");
 
@@ -54,7 +56,7 @@ User: Sure, I will check it after my meeting.
 
 ### Task:
 [Conversation]:
-${recentHistory}
+${chatContext}
 
 [Suggestions]:
 `;
@@ -68,7 +70,8 @@ ${recentHistory}
     });
     console.log("Mistral API response:", response);
     const text = response.choices[0].message.content;
-    return JSON.parse(text).replies;
+    const jsonText = text.replace(/^```json\s*|```$/gim, '').trim();
+    return JSON.parse(jsonText).replies;
   } catch (err) {
     console.error("Mistral API error:", err);
     return [];
