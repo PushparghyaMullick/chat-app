@@ -1,5 +1,11 @@
 import { Mistral } from '@mistralai/mistralai';
-import 'dotenv/config';
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+dotenv.config({ path: join(__dirname, '..', '.env') });
 
 const apiKey = process.env.MISTRAL_API_KEY || "";
 const client = new Mistral({apiKey: apiKey});
@@ -26,13 +32,14 @@ Your goal is to generate 3 natural replies that fit seamlessly into the conversa
 [Conversation]:
 Friend: wanna go out later?
 User: maybe, kinda tired tho
+Friend: aww, feel that. movie night instead?
 
 [Suggestions]:
 {
   "replies": [
-    "not sure yet 😅",
-    "maybe after dinner?",
-    "let me see how i feel"
+    "ooh yes I'm down for a movie",
+    "what were you thinking of watching?",
+    "perfect, let's do it!"
   ]
 }
 
@@ -42,13 +49,14 @@ User: maybe, kinda tired tho
 [Conversation]:
 Colleague: Can you review my code tonight?
 User: Sure, I will check it after my meeting.
+Colleague: Thanks! The branch is feature/checkout-optimizations. Let me know if you have any questions.
 
 [Suggestions]:
 {
   "replies": [
-    "Yes, I can take a look after dinner.",
-    "I’ll review it once I’m done with my current task.",
-    "No problem, I’ll handle it tonight."
+    "Got it, thanks for the info.",
+    "Will ping you if I run into anything.",
+    "Checking it now."
   ]
 }
 

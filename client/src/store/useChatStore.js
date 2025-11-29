@@ -11,6 +11,7 @@ export const useChatStore = create((set, get) => ({
     selectedUser: null,
     isUsersLoading: false,
     isMessagesLoading: false,
+    suggestions: [],
 
     getUsers: async () => {
         set({ isUsersLoading: true });
@@ -38,7 +39,8 @@ export const useChatStore = create((set, get) => ({
         set({ isMessagesLoading: true });
         try {
             const response = await axiosInstance.get(`/message/${userId}`);
-            set({ messages: response.data });
+            set({ messages: response.data.messages });
+            set({ suggestions: response.data.suggestions });
         } catch (err) {
             console.log(err);
             toast.error(err.response.data.message);
@@ -54,6 +56,18 @@ export const useChatStore = create((set, get) => ({
             set({ messages: [...messages, response.data] });
 
 
+        } catch (err) {
+            console.log(err);
+            toast.error(err.response.data.message);
+        }
+    },
+
+    sendSuggestion: async (suggestion) => {
+        const { selectedUser, messages } = get();
+        try {
+            const response = await axiosInstance.post(`/message/${selectedUser._id}`, { text: suggestion });
+            set({ messages: [...messages, response.data] });
+            set({ suggestions: [] });
         } catch (err) {
             console.log(err);
             toast.error(err.response.data.message);

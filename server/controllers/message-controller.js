@@ -2,6 +2,7 @@ import User from "../models/user.js";
 import Message from "../models/message.js";
 import { cloudinary } from "../lib/cloudinary.js";
 import { io, getReceiverSocketId } from "../lib/socket.js";
+import { getReplySuggestions } from "../lib/replySuggestions.js";
 
 const getUsers = async (req, res) => {
     let users;
@@ -28,7 +29,32 @@ const getMessages = async (req, res) => {
             ]
         })
 
-        res.status(200).json(messages);
+        let suggestions = [];
+
+        if (messages.length > 0) {
+            const lastFiveMessages = messages.slice(-5);
+            const lastMessage = lastFiveMessages[lastFiveMessages.length - 1];
+
+            const lastSenderIdStr = lastMessage.senderId.toString();
+            const otherUserIdStr = userToChatId.toString();
+
+            if (lastSenderIdStr === otherUserIdStr) {
+                const recentChatHistory = lastFiveMessages.map((msg) => ({
+                    direction:
+                        msg.senderId.toString() === myId.toString()
+                            ? "sent"
+                            : "received",
+                    content: msg.text || ""
+                }));
+
+                try {
+                    suggestions = await getReplySuggestions(recentChatHistory);
+                } catch (err) {
+                    suggestions = [];
+                }
+            }
+        }
+        res.status(200).json({ messages, suggestions });
     }
     catch (err) {
         return res.status(500).json({ message: "Fetching messages failed, please try again later" });

@@ -4,10 +4,11 @@ import { useAuthStore } from "../store/useAuthStore";
 import ChatHeader from "./ChatHeader";
 import MessageSkeleton from "./skeletons/MessageSkeleton";
 import MessageInput from "./MessageInput";
+import ReplySuggestions from "./ReplySuggestions";
 import { formatMessageTime } from "../lib/utils";
 
 const ChatContainer = () => {
-  const { selectedUser, messages, getMessages, isMessagesLoading, subscribeToMessages, unsubscribeFromMessages } = useChatStore();
+  const { selectedUser, messages, getMessages, isMessagesLoading, subscribeToMessages, unsubscribeFromMessages, sendSuggestion } = useChatStore();
   const { user } = useAuthStore();
   const scrollRef = useRef(null);
 
@@ -27,11 +28,16 @@ const ChatContainer = () => {
     }
   }, [messages]); // Trigger scroll when messages update
 
+  const handleSuggestionClick = (suggestion) => {
+    sendSuggestion(suggestion);
+  };
+
   if (isMessagesLoading) {
     return (
       <div className="flex-1 flex flex-col overflow-auto">
         <ChatHeader />
         <MessageSkeleton />
+        <ReplySuggestions onSuggestionClick={handleSuggestionClick} />
         <MessageInput />
       </div>
     );
@@ -74,6 +80,7 @@ const ChatContainer = () => {
         ))}
       </div>
 
+      <ReplySuggestions onSuggestionClick={handleSuggestionClick} />
       <MessageInput />
     </div>
   );
